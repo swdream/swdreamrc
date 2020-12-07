@@ -1,0 +1,153 @@
+" Automatic reloading of .vimrc
+autocmd! bufwritepost .vimrc source %
+let g:auto_save = 1  " enable AutoSave on Vim startup
+
+set nocompatible
+set encoding=utf-8
+set history=50
+"
+" Indenting
+set autoindent
+set cindent
+set smartindent
+"
+" Tab
+set expandtab
+set sw=4
+set ts=4
+
+set directory=$HOME/.vim/swapfiles/
+
+set backspace=indent,eol,start
+set cursorline
+set colorcolumn=100
+set nu
+set paste
+set ruler
+set showcmd
+syntax on
+
+set hlsearch
+set incsearch
+set showmatch
+set ignorecase
+set smartcase
+
+autocmd TextChanged,TextChangedI <buffer> silent write
+
+" Vim pathogen
+if !empty(glob("~/.vim/autoload/pathogen.vim"))
+  execute pathogen#infect()
+endif
+
+" solarized was cloned to install by pathogen
+" git://github.com/altercation/vim-colors-solarized.git
+
+colorscheme koehler
+if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
+    colorscheme solarized
+endif
+
+" open a NERDTree automatically when vim starts up if no files were specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |   wincmd l | endif
+let g:NERDTreeChDirMode=2
+
+" close vim if the only window left open is a NERDTree
+" TODO, not work autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" Binding
+nnoremap j gj
+nnoremap k gk
+" move to curdir
+nmap gc :cd %:h<CR>
+
+
+nmap <Leader>ag :grep
+nmap <Leader>p :se paste!<CR>i
+nmap <Leader>src :source $MYVIMRC<CR>
+nmap <Leader>erc :e $MYVIMRC<CR>
+nmap <C-Q> :q<CR>
+nmap <C-X> :e#<CR>
+nmap <C-T> :tabe<CR>
+nmap <C-E> :NERDTreeToggle<CR>
+nmap <tab> :tabnext<CR>
+nmap <S-tab> :tabprevious<CR>
+nmap <C-N> :next<CR>
+nmap <C-B> :prev<CR>
+
+nmap <Leader>b :CtrlPBuffer<CR>
+nmap <Leader>tig :cd %:h<CR>:! tig<CR>
+
+" fugitive
+nmap <Leader>gs :Gstatus<CR>
+" j = down in vim
+nmap <Leader>gj :Git pull<CR>
+nmap <Leader>gd :Git diff<CR>
+nmap <Leader>ga :Git add %<CR>
+nmap <Leader>gc :Gcommit<CR>
+nmap <Leader>gp :Git push origin HEAD<CR>
+nmap <Leader>gn :Git checkout -b
+nmap <Leader>gm :Git checkout master<CR>
+nmap <Leader>gb :Git checkout
+nmap <Leader>gf :Git fetch --all --prune -v<CR>
+nmap <Leader>gr :Git rebase -i origin/
+
+nmap <Leader>mk :!make<CR>
+
+
+" TODO Toggle
+nmap <C-H> :vs ~/.vimnotebook.md<CR>
+
+filetype plugin indent on
+autocmd FileType text setlocal textwidth=78
+autocmd BufNewFile,BufRead *.jinja,*.jinja2 set ft=sls
+autocmd BufWritePre * :%s/\s\+$//e
+
+" Python
+autocmd FileType python nmap <Leader>r :!python %<CR>
+autocmd FileType python nmap <Leader># ggO#!/usr/bin/env python<CR># -*- coding: utf-8 -*-<Esc>o
+autocmd FileType python nmap <Leader>m Giif __name__ == "__main__":<CR>
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+
+" Shell
+autocmd FileType sh nmap <Leader>r :!bash %<CR>
+autocmd FileType sh nmap <Leader># ggO#!/bin/bash<Esc>o
+
+" Golang
+let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save
+let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor
+let g:go_version_warning = 0
+let g:go_gopls_enabled = 1
+
+autocmd Filetype go setlocal tabstop=4 shiftwidth=4 softtabstop=4
+
+autocmd FileType go nmap <leader>r <Plug>(go-run)
+autocmd FileType go nmap <leader>b <Plug>(go-build)
+autocmd FileType go nmap <leader>t <Plug>(go-test)
+autocmd FileType go nmap <leader>c <Plug>(go-coverage)
+autocmd FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+autocmd FileType go nmap <Leader>gd <Plug>(go-doc)
+autocmd FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+autocmd FileType go nmap <Leader>m Gipackage main<CR><CR>import (<CR>"log"<CR>)<CR>func main() {<CR>}<ESC>O
+
+" Haskell
+autocmd FileType haskell nmap <Leader>r :!runhaskell %<CR>
+
+" the autocomplete prompt to appear automatically whenever you press the dot (.)
+au filetype go inoremap <buffer> . .<C-x><C-o>
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+"let g:go_auto_type_info = 1
+
+" Ctags
+let Tlist_WinWidth = 55
+map T :TaskList<CR>
+" D stands for def
+map D :TlistToggle<CR>
+
+
+
